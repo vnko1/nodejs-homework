@@ -6,7 +6,7 @@ const {
   editFavoriteContactSchema,
 } = require("../../schema");
 
-const { contactValidation, isValidId } = require("../../middlewares");
+const { fieldValidation, isValidId } = require("../../middlewares");
 
 const {
   getAll,
@@ -25,21 +25,21 @@ router.get("/:contactId", isValidId, getById);
 
 router.post(
   "/",
-  contactValidation(addContactSchema, "Missing required name field"),
+  fieldValidation(addContactSchema, "Missing required name field"),
   add
 );
 
 router.put(
   "/:contactId",
   isValidId,
-  contactValidation(editContactSchema, "Missing fields"),
+  fieldValidation(editContactSchema, "Missing fields"),
   editById
 );
 
 router.patch(
   "/:contactId/favorite",
   isValidId,
-  contactValidation(editFavoriteContactSchema, "Missing field favorite"),
+  fieldValidation(editFavoriteContactSchema, "Missing field favorite"),
   updateStatusContact
 );
 

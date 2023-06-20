@@ -2,7 +2,7 @@ const { Schema, model } = require("mongoose");
 
 const { phoneNumberRegexp, emailRegex } = require("../../constants");
 
-const { contactSchemaError } = require("../../utils");
+const { schemaError } = require("../../utils");
 
 const contactSchema = new Schema(
   {
@@ -22,12 +22,16 @@ const contactSchema = new Schema(
       type: Boolean,
       default: false,
     },
+    owner: {
+      type: Schema.Types.ObjectId,
+      ref: "user",
+    },
   },
   { versionKey: false, timestamps: true }
 );
 
-contactSchema.post("save", contactSchemaError);
-contactSchema.post("find", contactSchemaError);
+contactSchema.post("save", schemaError);
+contactSchema.post("find", schemaError);
 
 const Contact = model("contact", contactSchema);
 

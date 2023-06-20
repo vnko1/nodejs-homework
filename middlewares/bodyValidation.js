@@ -1,11 +1,14 @@
-const { ApiError } = require("../../utils");
-
 const { isValidObjectId } = require("mongoose");
+const { ApiError } = require("../utils");
 
-const contactValidation = (schema, message) => (req, _, next) => {
+const fieldValidation = (schema, message) => (req, _, next) => {
   const { body } = req;
 
   const { error, value } = schema.validate(body);
+
+  if (error && message === "userValidation")
+    return next(ApiError(400, error.message));
+
   if (error) return next(ApiError(400, message));
 
   req.body = value;
@@ -20,4 +23,4 @@ const isValidId = (req, _, next) => {
   next();
 };
 
-module.exports = { contactValidation, isValidId };
+module.exports = { fieldValidation, isValidId };
