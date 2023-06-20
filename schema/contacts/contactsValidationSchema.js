@@ -1,23 +1,18 @@
 const Joi = require("joi");
 
-const { phoneNumberRegexp } = require("../../constants");
+const { phoneNumberRegex, emailRegex } = require("../../constants");
 
 const addContactSchema = Joi.object({
   name: Joi.string().min(3).max(30).required(),
-  email: Joi.string()
-    .email({ minDomainSegments: 2, tlds: { allow: ["com", "net"] } })
-    .required(),
-  phone: Joi.string().pattern(phoneNumberRegexp).required(),
+  email: Joi.string().pattern(emailRegex).required(),
+  phone: Joi.string().pattern(phoneNumberRegex).required(),
   favorite: Joi.boolean(),
 });
 
 const editContactSchema = Joi.object({
   name: Joi.string().min(3).max(30),
-  email: Joi.string().email({
-    minDomainSegments: 2,
-    tlds: { allow: ["com", "net"] },
-  }),
-  phone: Joi.string().pattern(phoneNumberRegexp),
+  email: Joi.string().pattern(emailRegex),
+  phone: Joi.string().pattern(phoneNumberRegex),
   favorite: Joi.boolean(),
 }).or("name", "email", "phone");
 

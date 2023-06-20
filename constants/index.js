@@ -1,3 +1,3 @@
-const { phoneNumberRegexp } = require("./contacts/contactsRegexp");
+const { phoneNumberRegex, emailRegex } = require("./constants");
 
-module.exports = { phoneNumberRegexp };
+module.exports = { phoneNumberRegex, emailRegex };
