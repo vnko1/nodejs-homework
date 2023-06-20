@@ -8,8 +8,8 @@ const userSchema = new Schema(
   {
     password: {
       type: String,
-      select: false,
       required: [true, "Set password for user"],
+      select: false,
     },
     email: {
       type: String,
