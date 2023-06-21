@@ -1,3 +1,7 @@
-const { phoneNumberRegex, emailRegex } = require("./constants");
+const {
+  phoneNumberRegex,
+  emailRegex,
+  subsciptionList,
+} = require("./constants");
 
-module.exports = { phoneNumberRegex, emailRegex };
+module.exports = { phoneNumberRegex, emailRegex, subsciptionList };

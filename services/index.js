@@ -6,4 +6,21 @@ const {
   remove,
 } = require("./contactsDb/contactsDb");
 
-module.exports = { findAll, find, create, edit, remove };
+const {
+  findUserByQuery,
+  createUser,
+  updateUser,
+  findUserById,
+} = require("./usersDb/usersDb");
+
+module.exports = {
+  findAll,
+  find,
+  create,
+  edit,
+  remove,
+  findUserByQuery,
+  createUser,
+  updateUser,
+  findUserById,
+};

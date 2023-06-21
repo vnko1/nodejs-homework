@@ -1,7 +1,7 @@
 const { Contact } = require("../../models");
 
-const findAll = (filter) => {
-  const query = filter.favorite ? filter : {};
+const findAll = ({ favorite, owner }) => {
+  const query = favorite ? { favorite, owner } : { owner };
 
   return Contact.find(query);
 };
