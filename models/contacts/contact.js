@@ -12,11 +12,11 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
-      match: emailRegex,
+      // match: emailRegex,
     },
     phone: {
       type: String,
-      match: phoneNumberRegexp,
+      // match: phoneNumberRegexp,
     },
     favorite: {
       type: Boolean,

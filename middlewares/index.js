@@ -1,3 +1,5 @@
 const { fieldValidation, isValidId } = require("./bodyValidation");
 
-module.exports = { fieldValidation, isValidId };
+const { authentificate } = require("./authentificate");
+
+module.exports = { fieldValidation, isValidId, authentificate };

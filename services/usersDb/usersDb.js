@@ -1,7 +1,11 @@
 const { User } = require("../../models");
 
-const findUserByEmail = (email) => User.findOne({ email });
+const findUserByQuery = (email) => User.findOne({ email });
+
+const findUserById = (id) => User.findById(id);
 
 const createUser = (newUser) => User.create(newUser);
 
-module.exports = { findUserByEmail, createUser };
+const updateUser = (id, newData) => User.findByIdAndUpdate(id, newData);
+
+module.exports = { findUserByQuery, createUser, updateUser, findUserById };

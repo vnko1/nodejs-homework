@@ -6,7 +6,12 @@ const {
   remove,
 } = require("./contactsDb/contactsDb");
 
-const { findUserByEmail, createUser } = require("./usersDb/usersDb");
+const {
+  findUserByQuery,
+  createUser,
+  updateUser,
+  findUserById,
+} = require("./usersDb/usersDb");
 
 module.exports = {
   findAll,
@@ -14,6 +19,8 @@ module.exports = {
   create,
   edit,
   remove,
-  findUserByEmail,
+  findUserByQuery,
   createUser,
+  updateUser,
+  findUserById,
 };

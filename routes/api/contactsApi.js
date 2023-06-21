@@ -6,7 +6,11 @@ const {
   editFavoriteContactSchema,
 } = require("../../schema");
 
-const { fieldValidation, isValidId } = require("../../middlewares");
+const {
+  fieldValidation,
+  isValidId,
+  authentificate,
+} = require("../../middlewares");
 
 const {
   getAll,
@@ -18,6 +22,8 @@ const {
 } = require("../../controllers");
 
 const router = express.Router();
+
+router.use(authentificate);
 
 router.get("/", getAll);
 

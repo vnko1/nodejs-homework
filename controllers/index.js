@@ -7,7 +7,7 @@ const {
   updateStatusContact,
 } = require("./contacts/contactsControllers");
 
-const { register } = require("./users/usersControllers");
+const { register, login } = require("./users/usersControllers");
 
 module.exports = {
   getAll,
@@ -17,4 +17,5 @@ module.exports = {
   deleteById,
   updateStatusContact,
   register,
+  login,
 };

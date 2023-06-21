@@ -4,7 +4,7 @@ const { authUserSchema } = require("../../schema");
 
 const { fieldValidation } = require("../../middlewares");
 
-const { register } = require("../../controllers");
+const { register, login } = require("../../controllers");
 
 const router = express.Router();
 
@@ -13,5 +13,7 @@ router.post(
   fieldValidation(authUserSchema, "userValidation"),
   register
 );
+
+router.post("/login", fieldValidation(authUserSchema, "userValidation"), login);
 
 module.exports = router;

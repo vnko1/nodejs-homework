@@ -2,12 +2,16 @@ const { findAll, find, create, edit, remove } = require("../../services");
 const { ApiError, decorCtrWrapper } = require("../../utils");
 
 const getAll = async (req, res) => {
-  const { page, limit, favorite } = req.query;
-  const perPage = page > 0 ? (page - 1) * limit : 0;
-  console.log(favorite);
-  const response = await findAll({ favorite }).skip(perPage).limit(limit);
+  const { id: owner } = req.user;
 
-  res.json({ data: response });
+  const { page = 1, limit = 10, favorite } = req.query;
+  const perPage = page > 0 ? (page - 1) * limit : 0;
+
+  const response = await findAll({ favorite, owner })
+    .skip(perPage)
+    .limit(limit);
+
+  res.json({ contacts: response });
 };
 
 const getById = async (req, res) => {
@@ -15,15 +19,16 @@ const getById = async (req, res) => {
   const response = await find(contactId);
 
   if (!response) throw ApiError(404, "Not found");
-  res.json({ data: response });
+  res.json({ contact: response });
 };
 
 const add = async (req, res) => {
+  const { id: owner } = req.user;
   const { body } = req;
 
-  const response = await create(body);
+  const response = await create({ ...body, owner });
 
-  res.status(201).json({ data: response });
+  res.status(201).json({ contact: response });
 };
 
 const editById = async (req, res) => {
@@ -34,7 +39,7 @@ const editById = async (req, res) => {
 
   if (!response) throw ApiError(404, "Not found");
 
-  res.json({ data: response });
+  res.json({ contact: response });
 };
 
 const updateStatusContact = async (req, res) => {
@@ -45,7 +50,7 @@ const updateStatusContact = async (req, res) => {
 
   if (!response) throw ApiError(404, "Not found");
 
-  res.json({ data: response });
+  res.json({ contact: response });
 };
 
 const deleteById = async (req, res) => {
