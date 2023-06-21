@@ -1,6 +1,6 @@
 const { Schema, model } = require("mongoose");
 
-const { phoneNumberRegexp, emailRegex } = require("../../constants");
+const { emailRegex } = require("../../constants");
 
 const { schemaError } = require("../../utils");
 
@@ -12,11 +12,10 @@ const contactSchema = new Schema(
     },
     email: {
       type: String,
-      // match: emailRegex,
+      match: emailRegex,
     },
     phone: {
       type: String,
-      // match: phoneNumberRegexp,
     },
     favorite: {
       type: Boolean,

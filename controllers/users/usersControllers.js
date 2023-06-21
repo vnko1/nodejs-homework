@@ -40,7 +40,32 @@ const login = async (req, res) => {
   });
 };
 
+const logout = async (req, res) => {
+  const { id } = req.user;
+
+  await updateUser(id, { token: "" });
+
+  res.sendStatus(204);
+};
+
+const current = async (req, res) => {
+  const { email, subscription } = req.user;
+  res.json({ user: { email, subscription } });
+};
+
+const subscriptionUpdate = async (req, res) => {
+  const { id } = req.user;
+  const { body } = req;
+
+  const user = await updateUser(id, body);
+
+  res.json({ user: { email: user.email, subscription: user.subscription } });
+};
+
 module.exports = {
   register: decorCtrWrapper(register),
   login: decorCtrWrapper(login),
+  logout: decorCtrWrapper(logout),
+  current: decorCtrWrapper(current),
+  subscriptionUpdate: decorCtrWrapper(subscriptionUpdate),
 };

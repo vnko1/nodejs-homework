@@ -1,5 +1,7 @@
-const phoneNumberRegex = /^[(]\d{3}[)][ ]\d{3}[-]\d{4}$/;
+const phoneNumberRegex = /^\+?[1-9][0-9]{7,14}$/;
 
 const emailRegex = /^((?!\.)[\w-_.]*[^.])(@\w+)(\.\w+(\.\w+)?[^.\W])$/;
 
-module.exports = { phoneNumberRegex, emailRegex };
+const subsciptionList = ["starter", "pro", "business"];
+
+module.exports = { phoneNumberRegex, emailRegex, subsciptionList };

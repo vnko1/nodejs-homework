@@ -4,11 +4,15 @@ const {
   editFavoriteContactSchema,
 } = require("./contacts/contactsValidationSchema");
 
-const { authUserSchema } = require("./users/usersValidationSchema");
+const {
+  authUserSchema,
+  editUserSubscription,
+} = require("./users/usersValidationSchema");
 
 module.exports = {
   addContactSchema,
   editContactSchema,
   editFavoriteContactSchema,
   authUserSchema,
+  editUserSubscription,
 };
