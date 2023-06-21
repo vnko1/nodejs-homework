@@ -17,17 +17,13 @@ const router = express.Router();
 router.patch(
   "/",
   authentificate,
-  fieldValidation(editUserSubscription, "userValidation"),
+  fieldValidation(editUserSubscription),
   subscriptionUpdate
 );
 
-router.post(
-  "/register",
-  fieldValidation(authUserSchema, "userValidation"),
-  register
-);
+router.post("/register", fieldValidation(authUserSchema), register);
 
-router.post("/login", fieldValidation(authUserSchema, "userValidation"), login);
+router.post("/login", fieldValidation(authUserSchema), login);
 
 router.post("/logout", authentificate, logout);
 

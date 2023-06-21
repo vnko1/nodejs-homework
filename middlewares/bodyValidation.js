@@ -6,8 +6,7 @@ const fieldValidation = (schema, message) => (req, _, next) => {
 
   const { error, value } = schema.validate(body);
 
-  if (error && message === "userValidation")
-    return next(ApiError(400, error.message));
+  if (error && !message) return next(ApiError(400, error.message));
 
   if (error) return next(ApiError(400, message));
 
