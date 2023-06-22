@@ -7,6 +7,7 @@ const {
 const {
   authUserSchema,
   editUserSubscription,
+  loginSchema,
 } = require("./users/usersValidationSchema");
 
 module.exports = {
@@ -15,4 +16,5 @@ module.exports = {
   editFavoriteContactSchema,
   authUserSchema,
   editUserSubscription,
+  loginSchema,
 };

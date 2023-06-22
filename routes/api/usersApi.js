@@ -1,6 +1,10 @@
 const express = require("express");
 
-const { authUserSchema, editUserSubscription } = require("../../schema");
+const {
+  authUserSchema,
+  editUserSubscription,
+  loginSchema,
+} = require("../../schema");
 
 const { fieldValidation, authentificate } = require("../../middlewares");
 
@@ -23,7 +27,7 @@ router.patch(
 
 router.post("/register", fieldValidation(authUserSchema), register);
 
-router.post("/login", fieldValidation(authUserSchema), login);
+router.post("/login", fieldValidation(loginSchema), login);
 
 router.post("/logout", authentificate, logout);
 

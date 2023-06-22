@@ -9,10 +9,15 @@ const authUserSchema = Joi.object({
   subscription: Joi.string(),
 });
 
+const loginSchema = Joi.object({
+  email: Joi.string().pattern(emailRegex).required(),
+  password: Joi.string().min(8).required(),
+});
+
 const editUserSubscription = Joi.object({
   subscription: Joi.string()
     .valid(...subsciptionList)
     .required(),
 });
 
-module.exports = { authUserSchema, editUserSubscription };
+module.exports = { authUserSchema, editUserSubscription, loginSchema };
