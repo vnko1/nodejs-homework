@@ -14,9 +14,12 @@ const register = async (req, res) => {
 
   const hashPass = await bcrypt.hash(password, 10);
 
-  const newUser = await createUser({ name, email, password: hashPass });
+  const token = jwt.sign({ id: user.id }, JWT_KEY, { expiresIn: "24h" });
+
+  const newUser = await createUser({ name, email, password: hashPass, token });
 
   res.status(201).json({
+    token,
     user: {
       email: newUser.email,
       subscription: newUser.subscription,
