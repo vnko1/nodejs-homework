@@ -18,7 +18,7 @@ const register = async (req, res) => {
 
   const token = jwt.sign({ id: newUser.id }, JWT_KEY, { expiresIn: "24h" });
 
-  await updateUser(user.id, { token });
+  await updateUser(newUser.id, { token });
 
   res.status(201).json({
     token,
