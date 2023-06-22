@@ -4,10 +4,10 @@ const { ApiError, decorCtrWrapper } = require("../../utils");
 const getAll = async (req, res) => {
   const { id: owner } = req.user;
 
-  const { page = 1, limit = 10, favorite } = req.query;
+  const { page = 1, limit = 10, favorite, search } = req.query;
   const perPage = page > 0 ? (page - 1) * limit : 0;
 
-  const response = await findAll({ favorite, owner })
+  const response = await findAll({ favorite, owner, search })
     .skip(perPage)
     .limit(limit);
 

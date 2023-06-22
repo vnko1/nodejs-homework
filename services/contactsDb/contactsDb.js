@@ -1,9 +1,30 @@
 const { Contact } = require("../../models");
 
-const findAll = ({ favorite, owner }) => {
-  const query = favorite ? { favorite, owner } : { owner };
+const findAll = ({ favorite, owner, search }) => {
+  const findOptions = search
+    ? {
+        $or: [
+          { name: { $regex: search, $options: "i" } },
+          { phone: { $regex: search, $options: "i" } },
+          { email: { $regex: search, $options: "i" } },
+        ],
+      }
+    : { owner };
 
-  return Contact.find(query);
+  if (search && favorite) {
+    findOptions.$or.forEach((item) => {
+      item.favorite = favorite;
+      item.owner = owner;
+    });
+  } else if (search) {
+    findOptions.$or.forEach((item) => {
+      item.owner = owner;
+    });
+  } else if (favorite) {
+    findOptions.favorite = favorite;
+  }
+
+  return Contact.find(findOptions);
 };
 
 const find = (id) => Contact.findById(id);
