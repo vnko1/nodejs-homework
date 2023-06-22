@@ -7,17 +7,21 @@ const { ApiError, decorCtrWrapper } = require("../../utils");
 const { JWT_KEY } = process.env;
 
 const register = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, name } = req.body;
 
   const user = await findUserByQuery(email);
   if (user) throw ApiError(409, "Email in use");
 
   const hashPass = await bcrypt.hash(password, 10);
 
-  const newUser = await createUser({ email, password: hashPass });
+  const newUser = await createUser({ name, email, password: hashPass });
 
   res.status(201).json({
-    user: { email: newUser.email, subscription: newUser.subscription },
+    user: {
+      email: newUser.email,
+      subscription: newUser.subscription,
+      name: newUser.name,
+    },
   });
 };
 
@@ -36,7 +40,11 @@ const login = async (req, res) => {
 
   res.json({
     token,
-    user: { email: user.email, subscription: user.subscription },
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+      name: user.name,
+    },
   });
 };
 
@@ -49,8 +57,8 @@ const logout = async (req, res) => {
 };
 
 const current = async (req, res) => {
-  const { email, subscription } = req.user;
-  res.json({ user: { email, subscription } });
+  const { email, subscription, name } = req.user;
+  res.json({ user: { email, subscription, name } });
 };
 
 const subscriptionUpdate = async (req, res) => {
@@ -59,7 +67,13 @@ const subscriptionUpdate = async (req, res) => {
 
   const user = await updateUser(id, body);
 
-  res.json({ user: { email: user.email, subscription: user.subscription } });
+  res.json({
+    user: {
+      email: user.email,
+      subscription: user.subscription,
+      name: user.name,
+    },
+  });
 };
 
 module.exports = {
