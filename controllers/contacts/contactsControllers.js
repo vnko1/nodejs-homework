@@ -5,13 +5,16 @@ const getAll = async (req, res) => {
   const { id: owner } = req.user;
 
   const { page = 1, limit = 10, favorite, search } = req.query;
-  const perPage = page > 0 ? (page - 1) * limit : 0;
 
-  const response = await findAll({ favorite, owner, search })
-    .skip(perPage)
-    .limit(limit);
+  const { contacts, total } = await findAll({
+    favorite,
+    owner,
+    search,
+    page,
+    limit,
+  });
 
-  res.json({ contacts: response });
+  res.json({ contacts, total });
 };
 
 const getById = async (req, res) => {

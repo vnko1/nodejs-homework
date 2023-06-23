@@ -1,6 +1,7 @@
 const { Contact } = require("../../models");
 
-const findAll = ({ favorite, owner, search }) => {
+const findAll = async ({ favorite, owner, search, page, limit }) => {
+  const perPage = page > 0 ? (page - 1) * limit : 0;
   const findOptions = search
     ? {
         $or: [
@@ -23,8 +24,11 @@ const findAll = ({ favorite, owner, search }) => {
   } else if (favorite) {
     findOptions.favorite = favorite;
   }
+  const contacts = await Contact.find(findOptions).skip(perPage).limit(limit);
 
-  return Contact.find(findOptions);
+  const total = await Contact.count(findOptions);
+
+  return { contacts, total };
 };
 
 const find = (id) => Contact.findById(id);
