@@ -24,7 +24,10 @@ const findAll = async ({ favorite, owner, search, page, limit }) => {
   } else if (favorite) {
     findOptions.favorite = favorite;
   }
-  const contacts = await Contact.find(findOptions).skip(perPage).limit(limit);
+  const contacts = await Contact.find(findOptions)
+    .skip(perPage)
+    .limit(limit)
+    .sort({ favorite: "desc" });
 
   const total = await Contact.count(findOptions);
 
