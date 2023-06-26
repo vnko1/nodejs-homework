@@ -11,7 +11,6 @@ const {
   createUser,
   updateUser,
   findUserById,
-  updateUserAvatar,
 } = require("./usersDb/usersDb");
 
 module.exports = {
@@ -24,5 +23,4 @@ module.exports = {
   createUser,
   updateUser,
   findUserById,
-  updateUserAvatar,
 };

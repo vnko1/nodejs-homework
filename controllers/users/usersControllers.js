@@ -3,13 +3,9 @@ const jwt = require("jsonwebtoken");
 const gravatar = require("gravatar");
 const path = require("path");
 const fs = require("fs/promises");
+const Jimp = require("jimp");
 
-const {
-  findUserByQuery,
-  createUser,
-  updateUser,
-  updateUserAvatar,
-} = require("../../services");
+const { findUserByQuery, createUser, updateUser } = require("../../services");
 const { ApiError, decorCtrWrapper } = require("../../utils");
 
 const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
@@ -73,10 +69,13 @@ const subscriptionUpdate = async (req, res) => {
 
   res.json({ user: { email: user.email, subscription: user.subscription } });
 };
-const { User } = require("../../models");
+
 const updateAvatar = async (req, res) => {
   const { id } = req.user;
   const { path: tempPath, originalname } = req.file;
+
+  (await Jimp.read(tempPath)).resize(250, 250).write(tempPath);
+
   const fileName = id + "_" + originalname;
 
   const publicPath = path.join(avatarsPath, fileName);
@@ -84,7 +83,7 @@ const updateAvatar = async (req, res) => {
   await fs.rename(tempPath, publicPath);
   const avatarURL = path.join("avatars", fileName);
 
-  await updateUserAvatar(id, avatarURL);
+  await updateUser(id, { avatarURL });
 
   res.json({ avatarURL });
 };
