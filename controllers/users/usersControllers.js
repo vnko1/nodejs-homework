@@ -1,8 +1,18 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const gravatar = require("gravatar");
+const path = require("path");
+const fs = require("fs/promises");
 
-const { findUserByQuery, createUser, updateUser } = require("../../services");
+const {
+  findUserByQuery,
+  createUser,
+  updateUser,
+  updateUserAvatar,
+} = require("../../services");
 const { ApiError, decorCtrWrapper } = require("../../utils");
+
+const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
 
 const { JWT_KEY } = process.env;
 
@@ -14,7 +24,9 @@ const register = async (req, res) => {
 
   const hashPass = await bcrypt.hash(password, 10);
 
-  const newUser = await createUser({ email, password: hashPass });
+  const avatarURL = gravatar.url(email);
+
+  const newUser = await createUser({ email, password: hashPass, avatarURL });
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -61,6 +73,21 @@ const subscriptionUpdate = async (req, res) => {
 
   res.json({ user: { email: user.email, subscription: user.subscription } });
 };
+const { User } = require("../../models");
+const updateAvatar = async (req, res) => {
+  const { id } = req.user;
+  const { path: tempPath, originalname } = req.file;
+  const fileName = id + "_" + originalname;
+
+  const publicPath = path.join(avatarsPath, fileName);
+
+  await fs.rename(tempPath, publicPath);
+  const avatarURL = path.join("avatars", fileName);
+
+  await updateUserAvatar(id, avatarURL);
+
+  res.json({ avatarURL });
+};
 
 module.exports = {
   register: decorCtrWrapper(register),
@@ -68,4 +95,5 @@ module.exports = {
   logout: decorCtrWrapper(logout),
   current: decorCtrWrapper(current),
   subscriptionUpdate: decorCtrWrapper(subscriptionUpdate),
+  updateAvatar: decorCtrWrapper(updateAvatar),
 };

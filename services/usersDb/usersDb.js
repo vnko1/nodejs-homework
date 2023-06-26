@@ -9,4 +9,13 @@ const createUser = (newUser) => User.create(newUser);
 const updateUser = (id, newData) =>
   User.findByIdAndUpdate(id, newData, { new: true });
 
-module.exports = { findUserByQuery, createUser, updateUser, findUserById };
+const updateUserAvatar = (id, newAvatar) =>
+  User.findByIdAndUpdate(id, { newAvatar });
+
+module.exports = {
+  findUserByQuery,
+  createUser,
+  updateUser,
+  findUserById,
+  updateUserAvatar,
+};
