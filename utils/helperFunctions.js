@@ -1,3 +1,5 @@
+const crypto = require("crypto");
+
 const ApiError = (status, message) => {
   const error = new Error(message);
   error.status = status;
@@ -9,4 +11,7 @@ const schemaError = (error, doc, next) => {
   next();
 };
 
-module.exports = { ApiError, schemaError };
+const hashEmail = (email) =>
+  crypto.createHash("md5").update(email).digest("hex");
+
+module.exports = { ApiError, schemaError, hashEmail };

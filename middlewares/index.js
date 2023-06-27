@@ -2,6 +2,12 @@ const { fieldValidation, isValidId } = require("./bodyValidation");
 
 const { authentificate } = require("./authentificate");
 
-const { upload } = require("./upload");
+const { upload, checkFile } = require("./upload");
 
-module.exports = { fieldValidation, isValidId, authentificate, upload };
+module.exports = {
+  fieldValidation,
+  isValidId,
+  authentificate,
+  upload,
+  checkFile,
+};

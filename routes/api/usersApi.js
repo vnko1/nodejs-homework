@@ -6,6 +6,7 @@ const {
   fieldValidation,
   authentificate,
   upload,
+  checkFile,
 } = require("../../middlewares");
 
 const {
@@ -34,6 +35,12 @@ router.post("/logout", authentificate, logout);
 
 router.post("/current", authentificate, current);
 
-router.patch("/avatars", authentificate, upload.single("avatar"), updateAvatar);
+router.patch(
+  "/avatars",
+  authentificate,
+  upload.single("avatar"),
+  checkFile,
+  updateAvatar
+);
 
 module.exports = router;

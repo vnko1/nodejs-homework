@@ -1,12 +1,12 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
-const gravatar = require("gravatar");
+
 const path = require("path");
 const fs = require("fs/promises");
 const Jimp = require("jimp");
 
 const { findUserByQuery, createUser, updateUser } = require("../../services");
-const { ApiError, decorCtrWrapper } = require("../../utils");
+const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
 
 const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
 
@@ -16,11 +16,14 @@ const register = async (req, res) => {
   const { email, password } = req.body;
 
   const user = await findUserByQuery(email);
+
   if (user) throw ApiError(409, "Email in use");
 
   const hashPass = await bcrypt.hash(password, 10);
 
-  const avatarURL = gravatar.url(email);
+  const avatarURL = `https://www.gravatar.com/avatar/${hashEmail(
+    email
+  )}.jpg?d=robohash`;
 
   const newUser = await createUser({ email, password: hashPass, avatarURL });
 
@@ -72,16 +75,16 @@ const subscriptionUpdate = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { id } = req.user;
-  const { path: tempPath, originalname } = req.file;
+
+  const { path: tempPath, filename } = req.file;
 
   (await Jimp.read(tempPath)).resize(250, 250).write(tempPath);
 
-  const fileName = id + "_" + originalname;
-
-  const publicPath = path.join(avatarsPath, fileName);
+  const publicPath = path.join(avatarsPath, filename);
 
   await fs.rename(tempPath, publicPath);
-  const avatarURL = path.join("avatars", fileName);
+
+  const avatarURL = path.join("avatars", filename);
 
   await updateUser(id, { avatarURL });
 
