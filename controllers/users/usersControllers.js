@@ -73,9 +73,8 @@ const subscriptionUpdate = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { id } = req.user;
-  const { path: tempPath, filename } = req.file;
-
-  const avatarURL = await ImageService.save(tempPath, filename, 250, 250);
+  const { path: tempPath } = req.file;
+  const avatarURL = await ImageService.uploadImage(tempPath, 250, 250);
 
   await Users.updateUser(id, { avatarURL });
 

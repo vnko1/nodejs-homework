@@ -2,8 +2,15 @@ const Jimp = require("jimp");
 const multer = require("multer");
 const path = require("path");
 const fs = require("fs/promises");
-
+const cloudinary = require("cloudinary").v2;
 const { ApiError } = require("../../utils");
+const { CLOUD_NAME, API_KEY, API_SECRET } = process.env;
+
+cloudinary.config({
+  cloud_name: CLOUD_NAME,
+  api_key: API_KEY,
+  api_secret: API_SECRET,
+});
 
 class ImageService {
   static upload(name) {
@@ -29,13 +36,32 @@ class ImageService {
     );
   }
 
-  static async save(temPath, filename, width, height) {
+  static async save(imagePath, filename, width, height) {
     const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
-    const image = await Jimp.read(temPath);
-    image.resize(width, height).write(temPath);
+    const image = await Jimp.read(imagePath);
+    image.resize(width, height).write(imagePath);
     const publicPath = path.join(avatarsPath, filename);
-    await fs.rename(temPath, publicPath);
+    await fs.rename(imagePath, publicPath);
     return path.join("avatars", filename);
+  }
+
+  static async uploadImage(imagePath, width, height) {
+    const options = {
+      use_filename: true,
+      unique_filename: false,
+      overwrite: true,
+    };
+
+    try {
+      const image = await Jimp.read(imagePath);
+      image.resize(width, height).write(imagePath);
+
+      const result = await cloudinary.uploader.upload(imagePath, options);
+
+      return result.secure_url;
+    } catch (error) {
+      throw ApiError(500, error.message);
+    }
   }
 }
 
