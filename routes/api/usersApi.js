@@ -5,9 +5,11 @@ const { authUserSchema, editUserSubscription } = require("../../schema");
 const {
   fieldValidation,
   authentificate,
-  upload,
+
   checkFile,
 } = require("../../middlewares");
+
+const { ImageService } = require("../../services");
 
 const {
   register,
@@ -38,7 +40,7 @@ router.post("/current", authentificate, current);
 router.patch(
   "/avatars",
   authentificate,
-  upload.single("avatar"),
+  ImageService.upload("avatar"),
   checkFile,
   updateAvatar
 );

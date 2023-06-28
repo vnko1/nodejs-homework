@@ -1,8 +1,42 @@
 const Jimp = require("jimp");
+const multer = require("multer");
+const path = require("path");
+const fs = require("fs/promises");
 
-const imageService = async (patheName, width, height) => {
-  const image = await Jimp.read(patheName);
-  image.resize(width, height).write(patheName);
-};
+const { ApiError } = require("../../utils");
 
-module.exports = { imageService };
+class ImageService {
+  static upload(name) {
+    const dirName = path.join(__dirname, "../../", "temp");
+    const multerConfig = multer.diskStorage({
+      destination: dirName,
+      filename: (req, file, cb) => {
+        const { id } = req.user;
+        const { mimetype } = file;
+        const ext = mimetype.split("/")[1];
+        const filename = "avatar_" + id + "." + ext;
+        cb(null, filename);
+      },
+    });
+
+    const multerFilter = (req, file, cb) => {
+      const { mimetype } = file;
+      if (mimetype.startsWith("image/")) cb(null, true);
+      else cb(ApiError(400, "Bad request"), false);
+    };
+    return multer({ storage: multerConfig, fileFilter: multerFilter }).single(
+      name
+    );
+  }
+
+  static async save(temPath, filename, width, height) {
+    const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
+    const image = await Jimp.read(temPath);
+    image.resize(width, height).write(temPath);
+    const publicPath = path.join(avatarsPath, filename);
+    await fs.rename(temPath, publicPath);
+    return path.join("avatars", filename);
+  }
+}
+
+module.exports = { ImageService };

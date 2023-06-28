@@ -1,13 +1,8 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 
-const path = require("path");
-const fs = require("fs/promises");
-
-const { Users, imageService } = require("../../services");
+const { Users, ImageService } = require("../../services");
 const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
-
-const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
 
 const { JWT_KEY } = process.env;
 
@@ -78,16 +73,9 @@ const subscriptionUpdate = async (req, res) => {
 
 const updateAvatar = async (req, res) => {
   const { id } = req.user;
-
   const { path: tempPath, filename } = req.file;
 
-  await imageService(tempPath, 250, 250);
-
-  const publicPath = path.join(avatarsPath, filename);
-
-  await fs.rename(tempPath, publicPath);
-
-  const avatarURL = path.join("avatars", filename);
+  const avatarURL = await ImageService.save(tempPath, filename, 250, 250);
 
   await Users.updateUser(id, { avatarURL });
 
