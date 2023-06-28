@@ -1,12 +1,23 @@
 const { User } = require("../../models");
 
-const findUserByQuery = (email) => User.findOne({ email });
+class Users {
+  static findUserByQuery(email) {
+    return User.findOne({ email });
+  }
 
-const findUserById = (id) => User.findById(id);
+  static findUserById(id) {
+    return User.findById(id);
+  }
 
-const createUser = (newUser) => User.create(newUser);
+  static createUser(newUser) {
+    return User.create(newUser);
+  }
 
-const updateUser = (id, newData) =>
-  User.findByIdAndUpdate(id, newData, { new: true });
+  static updateUser(id, newData) {
+    return User.findByIdAndUpdate(id, newData, { new: true });
+  }
+}
 
-module.exports = { findUserByQuery, createUser, updateUser, findUserById };
+module.exports = {
+  Users,
+};
