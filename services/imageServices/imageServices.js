@@ -36,14 +36,7 @@ class ImageService {
     );
   }
 
-  static async save(imagePath, filename, width, height) {
-    const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
-    const image = await Jimp.read(imagePath);
-    image.resize(width, height).write(imagePath);
-    const publicPath = path.join(avatarsPath, filename);
-    await fs.rename(imagePath, publicPath);
-    return path.join("avatars", filename);
-  }
+
 
   static async uploadImage(imagePath, width, height) {
     const options = {
