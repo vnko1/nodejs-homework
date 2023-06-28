@@ -29,12 +29,12 @@ class ImageService {
     );
   }
 
-  static async save(temPath, filename, width, height) {
+  static async save(imagePath, filename, width, height) {
     const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
-    const image = await Jimp.read(temPath);
-    image.resize(width, height).write(temPath);
+    const image = await Jimp.read(imagePath);
+    image.resize(width, height).write(imagePath);
     const publicPath = path.join(avatarsPath, filename);
-    await fs.rename(temPath, publicPath);
+    await fs.rename(imagePath, publicPath);
     return path.join("avatars", filename);
   }
 }
