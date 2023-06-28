@@ -3,9 +3,8 @@ const jwt = require("jsonwebtoken");
 
 const path = require("path");
 const fs = require("fs/promises");
-const Jimp = require("jimp");
 
-const { findUserByQuery, createUser, updateUser } = require("../../services");
+const { Users, imageService } = require("../../services");
 const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
 
 const avatarsPath = path.join(__dirname, "../../", "public", "avatars");
@@ -15,7 +14,7 @@ const { JWT_KEY } = process.env;
 const register = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await findUserByQuery(email);
+  const user = await Users.findUserByQuery(email);
 
   if (user) throw ApiError(409, "Email in use");
 
@@ -25,7 +24,11 @@ const register = async (req, res) => {
     email
   )}.jpg?d=robohash`;
 
-  const newUser = await createUser({ email, password: hashPass, avatarURL });
+  const newUser = await Users.createUser({
+    email,
+    password: hashPass,
+    avatarURL,
+  });
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -34,7 +37,7 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await findUserByQuery(email);
+  const user = await Users.findUserByQuery(email);
 
   if (!user) throw ApiError(401, "Email or password is wrong");
 
@@ -43,7 +46,7 @@ const login = async (req, res) => {
   if (!isPasswordValid) throw ApiError(401, "Email or password is wrong");
 
   const token = jwt.sign({ id: user.id }, JWT_KEY, { expiresIn: "24h" });
-  await updateUser(user.id, { token });
+  await Users.updateUser(user.id, { token });
 
   res.json({
     token,
@@ -54,7 +57,7 @@ const login = async (req, res) => {
 const logout = async (req, res) => {
   const { id } = req.user;
 
-  await updateUser(id, { token: "" });
+  await Users.updateUser(id, { token: "" });
 
   res.sendStatus(204);
 };
@@ -68,7 +71,7 @@ const subscriptionUpdate = async (req, res) => {
   const { id } = req.user;
   const { body } = req;
 
-  const user = await updateUser(id, body);
+  const user = await Users.updateUser(id, body);
 
   res.json({ user: { email: user.email, subscription: user.subscription } });
 };
@@ -78,7 +81,7 @@ const updateAvatar = async (req, res) => {
 
   const { path: tempPath, filename } = req.file;
 
-  (await Jimp.read(tempPath)).resize(250, 250).write(tempPath);
+  await imageService(tempPath, 250, 250);
 
   const publicPath = path.join(avatarsPath, filename);
 
@@ -86,7 +89,7 @@ const updateAvatar = async (req, res) => {
 
   const avatarURL = path.join("avatars", filename);
 
-  await updateUser(id, { avatarURL });
+  await Users.updateUser(id, { avatarURL });
 
   res.json({ avatarURL });
 };

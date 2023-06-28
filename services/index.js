@@ -1,26 +1,11 @@
-const {
-  findAll,
-  find,
-  create,
-  edit,
-  remove,
-} = require("./contactsDb/contactsDb");
+const { Contacts } = require("./contactsDb/contactsDb");
 
-const {
-  findUserByQuery,
-  createUser,
-  updateUser,
-  findUserById,
-} = require("./usersDb/usersDb");
+const { Users } = require("./usersDb/usersDb");
+
+const { imageService } = require("./imageServices/imageServices");
 
 module.exports = {
-  findAll,
-  find,
-  create,
-  edit,
-  remove,
-  findUserByQuery,
-  createUser,
-  updateUser,
-  findUserById,
+  Contacts,
+  Users,
+  imageService,
 };

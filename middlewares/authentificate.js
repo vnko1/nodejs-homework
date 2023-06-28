@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 const { decorCtrWrapper, ApiError } = require("../utils");
-const { findUserById } = require("../services");
+const { Users } = require("../services");
 
 const { JWT_KEY } = process.env;
 
@@ -13,7 +13,7 @@ const authentificate = async (req, _, next) => {
 
   try {
     const { id } = jwt.verify(token, JWT_KEY);
-    const user = await findUserById(id);
+    const user = await Users.findUserById(id);
 
     if (!user || !user.token || user.token !== token)
       return next(ApiError(401, "Not authorized"));
