@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const fs = require("fs/promises");
 
 const { Users, ImageService } = require("../../services");
 const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
@@ -77,6 +78,8 @@ const updateAvatar = async (req, res) => {
   const avatarURL = await ImageService.uploadImage(tempPath, 250, 250);
 
   await Users.updateUser(id, { avatarURL });
+
+  await fs.unlink(tempPath);
 
   res.json({ avatarURL });
 };
