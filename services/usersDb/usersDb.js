@@ -1,8 +1,11 @@
 const { User } = require("../../models");
 
 class Users {
-  static findUserByQuery(email) {
-    return User.findOne({ email });
+  static findUserByQuery(data) {
+    const [key] = Object.keys(data);
+    const query = { [key]: data[key] };
+
+    return User.findOne(query);
   }
 
   static findUserById(id) {

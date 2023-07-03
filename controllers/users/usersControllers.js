@@ -1,16 +1,22 @@
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const fs = require("fs/promises");
+const { nanoid } = require("nanoid");
 
 const { Users, ImageService } = require("../../services");
-const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
+const {
+  ApiError,
+  decorCtrWrapper,
+  hashEmail,
+  sendEmail,
+} = require("../../utils");
 
-const { JWT_KEY } = process.env;
+const { JWT_KEY, BASE_URL } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
 
-  const user = await Users.findUserByQuery(email);
+  const user = await Users.findUserByQuery({ email });
 
   if (user) throw ApiError(409, "Email in use");
 
@@ -20,22 +26,65 @@ const register = async (req, res) => {
     email
   )}.jpg?d=robohash`;
 
+  const verificationToken = nanoid();
+
   const newUser = await Users.createUser({
     email,
     password: hashPass,
     avatarURL,
+    verificationToken,
   });
+
+  const msg = {
+    to: email,
+    subject: "Verify email",
+    html: `<a href='${BASE_URL}/users/verify/${verificationToken}' target='_blank'>Verify email</a>`,
+  };
+
+  await sendEmail(msg);
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
   });
 };
 
+const verifyEmail = async (req, res) => {
+  const { verificationToken } = req.params;
+
+  const user = await Users.findUserByQuery({ verificationToken });
+
+  if (!user) throw ApiError(404, "User not found");
+
+  await Users.updateUser(user.id, { verify: true, verificationToken: null });
+
+  res.json({ message: "Verification successful" });
+};
+
+const resendVerifyEmail = async (req, res) => {
+  const { email } = req.body;
+
+  const user = await Users.findUserByQuery({ email });
+
+  if (user.verify) throw ApiError(400, "Verification has already been passed");
+
+  const msg = {
+    to: email,
+    subject: "Verify email",
+    html: `<a href='${BASE_URL}/users/verify/${user.verificationToken}' target='_blank'>Verify email</a>`,
+  };
+
+  await sendEmail(msg);
+
+  res.json({ message: "Verification email sent" });
+};
+
 const login = async (req, res) => {
   const { email, password } = req.body;
-  const user = await Users.findUserByQuery(email);
+  const user = await Users.findUserByQuery({ email });
 
   if (!user) throw ApiError(401, "Email or password is wrong");
+
+  if (!user.verify) throw ApiError(401, "Your email is not verified");
 
   const isPasswordValid = await bcrypt.compare(password, user.password);
 
@@ -91,4 +140,6 @@ module.exports = {
   current: decorCtrWrapper(current),
   subscriptionUpdate: decorCtrWrapper(subscriptionUpdate),
   updateAvatar: decorCtrWrapper(updateAvatar),
+  verifyEmail: decorCtrWrapper(verifyEmail),
+  resendVerifyEmail: decorCtrWrapper(resendVerifyEmail),
 };
