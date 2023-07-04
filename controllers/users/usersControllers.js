@@ -30,7 +30,7 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  await Email.send(email, verificationToken);
+  await Email.send(email, req.protocol, req.get("host"), verificationToken);
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -58,7 +58,12 @@ const resendVerifyEmail = async (req, res) => {
 
   if (user.verify) throw ApiError(400, "Verification has already been passed");
 
-  await Email.send(email, user.verificationToken);
+  await Email.send(
+    email,
+    req.protocol,
+    req.get("host"),
+    user.verificationToken
+  );
 
   res.json({ message: "Verification email sent" });
 };

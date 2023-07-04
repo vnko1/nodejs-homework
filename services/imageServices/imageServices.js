@@ -14,7 +14,7 @@ cloudinary.config({
 
 class ImageService {
   static upload(name) {
-    const dirName = path.join(__dirname, "../../", "temp");
+    const dirName = path.join(__dirname, "..", "..", "temp");
     const multerConfig = multer.diskStorage({
       destination: dirName,
       filename: (req, file, cb) => {
