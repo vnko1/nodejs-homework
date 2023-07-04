@@ -14,4 +14,8 @@ const editUserSubscription = Joi.object({
     .required(),
 });
 
-module.exports = { authUserSchema, editUserSubscription };
+const emailSchema = Joi.object({
+  email: Joi.string().pattern(emailRegex).required(),
+});
+
+module.exports = { authUserSchema, editUserSubscription, emailSchema };
