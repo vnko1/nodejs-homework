@@ -1,4 +1,4 @@
-## GoIT Node.js Course Template Homework
+## GoIT Node.js Course Homework
 
 
 ### Команди:
