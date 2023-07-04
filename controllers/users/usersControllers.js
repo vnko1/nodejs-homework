@@ -3,15 +3,10 @@ const jwt = require("jsonwebtoken");
 const fs = require("fs/promises");
 const { nanoid } = require("nanoid");
 
-const { Users, ImageService } = require("../../services");
-const {
-  ApiError,
-  decorCtrWrapper,
-  hashEmail,
-  sendEmail,
-} = require("../../utils");
+const { Users, ImageService, Email } = require("../../services");
+const { ApiError, decorCtrWrapper, hashEmail } = require("../../utils");
 
-const { JWT_KEY, BASE_URL } = process.env;
+const { JWT_KEY } = process.env;
 
 const register = async (req, res) => {
   const { email, password } = req.body;
@@ -35,13 +30,7 @@ const register = async (req, res) => {
     verificationToken,
   });
 
-  const msg = {
-    to: email,
-    subject: "Verify email",
-    html: `<a href='${BASE_URL}/users/verify/${verificationToken}' target='_blank'>Verify email</a>`,
-  };
-
-  await sendEmail(msg);
+  await Email.send(email, verificationToken);
 
   res.status(201).json({
     user: { email: newUser.email, subscription: newUser.subscription },
@@ -69,13 +58,7 @@ const resendVerifyEmail = async (req, res) => {
 
   if (user.verify) throw ApiError(400, "Verification has already been passed");
 
-  const msg = {
-    to: email,
-    subject: "Verify email",
-    html: `<a href='${BASE_URL}/users/verify/${user.verificationToken}' target='_blank'>Verify email</a>`,
-  };
-
-  await sendEmail(msg);
+  await Email.send(email, user.verificationToken);
 
   res.json({ message: "Verification email sent" });
 };
