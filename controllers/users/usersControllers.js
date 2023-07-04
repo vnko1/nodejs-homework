@@ -57,6 +57,8 @@ const verifyEmail = async (req, res) => {
 
   await Users.updateUser(user.id, { verify: true, verificationToken: null });
 
+  // res.render("verifyMessage");
+
   res.json({ message: "Verification successful" });
 };
 
