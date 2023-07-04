@@ -1,4 +1,4 @@
-FROM node
+FROM node:18.16.0
 
 WORKDIR /app
 
@@ -8,4 +8,4 @@ RUN npm install
 
 EXPOSE 3000
 
-CMD [ "node", "server" ]
+CMD [ "node", "server.js" ]
